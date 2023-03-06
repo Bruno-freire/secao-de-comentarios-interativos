@@ -1,0 +1,27 @@
+.inputCurrentUser{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: $White;
+  margin-top: 1.5em;
+  padding: 1em;
+  img{
+    width: 2.5em;
+  }
+  textarea{
+    width: 75%;
+    height: 5em;
+    padding: 1em;
+    border-radius: 0.4em;
+  }
+  button{
+    background-color: $ModerateBlue;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.3em;
+    min-width: 4.5em;
+    padding: 0.4em;
+    color: $White;
+  }
+}

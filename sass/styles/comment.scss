@@ -46,9 +46,11 @@
           }
           p{
             color: $GrayishBlue;
+            font-size: 14px;
           }
           .comment-info-user-name{
             color: black;
+            font-weight: bold;
           }
         }
         .comment-info-reply{
@@ -65,6 +67,7 @@
       .comment-main-content-text{
         color: $GrayishBlue;
         font-size: 14px;
+        cursor: default;
       }
     }
   }

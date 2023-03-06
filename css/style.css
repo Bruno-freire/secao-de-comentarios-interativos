@@ -75,9 +75,11 @@ main {
 }
 .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-user p {
   color: hsl(211deg, 10%, 45%);
+  font-size: 14px;
 }
 .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-user .comment-info-user-name {
   color: black;
+  font-weight: bold;
 }
 .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply {
   display: flex;
@@ -92,6 +94,7 @@ main {
 .comment .comment-main .comment-main-content .comment-main-content-text {
   color: hsl(211deg, 10%, 45%);
   font-size: 14px;
+  cursor: default;
 }
 .comment .reply {
   display: flex;
@@ -103,6 +106,34 @@ main {
 }
 .comment .reply .replyComment {
   row-gap: 0;
+}
+
+.inputCurrentUser {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: hsl(0deg, 0%, 100%);
+  margin-top: 1.5em;
+  padding: 1em;
+}
+.inputCurrentUser img {
+  width: 2.5em;
+}
+.inputCurrentUser textarea {
+  width: 75%;
+  height: 5em;
+  padding: 1em;
+  border-radius: 0.4em;
+}
+.inputCurrentUser button {
+  background-color: hsl(238deg, 40%, 52%);
+  border: none;
+  cursor: pointer;
+  border-radius: 0.3em;
+  min-width: 4.5em;
+  padding: 0.4em;
+  color: hsl(0deg, 0%, 100%);
 }
 
 /*# sourceMappingURL=style.css.map */
