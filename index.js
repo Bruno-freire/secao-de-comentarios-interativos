@@ -1,10 +1,8 @@
-
-
 let comments = []
 
 function createDiv(classList){
   const div = document.createElement('div')
-  div.classList = classList || ''
+  div.classList = classList ?? ''
   return div
 }
 
@@ -42,24 +40,50 @@ async function requestHttp(){
   return await fetch('http://localhost:3000/comments').then(res => res.json())
 }
 
-function render(commentData){
+function render(commentData, renderImmediately){
   const comment = createComment()
+  
+  const commentMain = createDiv('comment-main')
   const reply = createDiv()
   reply.id = `reply-${commentData.id}`
 
-  const commentMain = createCommentMain(commentData.content)
   const commentMainPoints = createCommentMainPoints(commentData.score)
-  const commentMainContent = createCommentMainContent('comment-main-content')
+  const commentMainContent = createDiv('comment-main-content')
 
+  const commentMainContentHeader = createDiv('comment-main-content-header')
+  const commentMainContentText = createDiv('comment-main-content-text')
+  commentMainContentText.textContent = commentData.content
 
+  const commentInfoUser = createDiv('comment-info-user')
+  const imgReply = createImg('./images/icon-reply.svg', 'reply')
+  const replyText = createText('Reply')
+
+  const imgUser = createImg(commentData.user.image.png)
+  const userName = createText(commentData.user.username)
+  userName.classList = 'comment-info-user-name'
+  const elapseTime = createText(commentData.createdAt)
+
+  commentInfoUser.append(imgUser,userName,elapseTime)
+  commentMainContentHeader.append(commentInfoUser,imgReply,replyText)
+  commentMainContent.append(commentMainContentHeader,commentMainContentText)
   commentMain.append(commentMainPoints,commentMainContent)
+
+  console.log(commentData.replies)
+  if(commentData.replies){
+    const repliesArray = commentData.replies.forEach(replie => render(replie,false))
+  }
   comment.append(commentMain,reply)
+
+  if(renderImmediately){
+    document.querySelector('#comments').append(comment)
+  }
   return comment
 }
 
 async function setup(){
   const results = await requestHttp()
-  console.log(results)
+  comments.push(...results)
+  comments.forEach(comment => render(comment, true))
 }
 
 setup()
