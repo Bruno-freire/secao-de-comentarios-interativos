@@ -1,0 +1,82 @@
+.comment{
+  background-color: $White;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  .comment-main{
+    display: flex;
+    align-items: center;
+    column-gap: 1em;
+    background-color: $White;
+    padding: 1em;
+    margin-top: 1em;
+    .comment-main-points{
+      display: flex;
+      flex-direction: column;
+      background-color: $VeryLightGray;
+      min-height: 5em;
+      width: 2rem;
+      justify-content: space-evenly;
+      align-items: center;
+      img{
+        cursor: pointer;
+      }
+      p{
+        color: $ModerateBlue;
+        cursor: default;
+      }
+    }
+    .comment-main-content{
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      .comment-main-content-header{
+        display: flex;
+        justify-content: space-between;
+        max-height: 3em;
+        .comment-info-user{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          column-gap: 1em;
+          img{
+            width: 2em;
+          }
+          p{
+            color: $GrayishBlue;
+          }
+          .comment-info-user-name{
+            color: black;
+          }
+        }
+        .comment-info-reply{
+          display: flex;
+          column-gap: 0.5rem;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          p{
+            color: $ModerateBlue;
+          }
+        }
+      }
+      .comment-main-content-text{
+        color: $GrayishBlue;
+        font-size: 14px;
+      }
+    }
+  }
+  .reply{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-left: 2px solid $LightGray;
+    margin-left: 1em;
+    padding-left: 1em;
+    .replyComment{
+      row-gap: 0;
+    }
+  }
+}

@@ -40,11 +40,11 @@ async function requestHttp(){
   return await fetch('http://localhost:3000/comments').then(res => res.json())
 }
 
-function render(commentData, renderImmediately){
+function render(commentData, isReply){
   const comment = createComment()
   
   const commentMain = createDiv('comment-main')
-  const reply = createDiv()
+  const reply = createDiv('reply')
   reply.id = `reply-${commentData.id}`
 
   const commentMainPoints = createCommentMainPoints(commentData.score)
@@ -55,8 +55,10 @@ function render(commentData, renderImmediately){
   commentMainContentText.textContent = commentData.content
 
   const commentInfoUser = createDiv('comment-info-user')
+  const div = createDiv('comment-info-reply')
   const imgReply = createImg('./images/icon-reply.svg', 'reply')
   const replyText = createText('Reply')
+  div.append(imgReply,replyText)
 
   const imgUser = createImg(commentData.user.image.png)
   const userName = createText(commentData.user.username)
@@ -64,26 +66,30 @@ function render(commentData, renderImmediately){
   const elapseTime = createText(commentData.createdAt)
 
   commentInfoUser.append(imgUser,userName,elapseTime)
-  commentMainContentHeader.append(commentInfoUser,imgReply,replyText)
+  commentMainContentHeader.append(commentInfoUser,div)
   commentMainContent.append(commentMainContentHeader,commentMainContentText)
   commentMain.append(commentMainPoints,commentMainContent)
 
-  console.log(commentData.replies)
   if(commentData.replies){
-    const repliesArray = commentData.replies.forEach(replie => render(replie,false))
+      commentData.replies.forEach(replie => {
+        const replieRenderizado = render(replie)
+        replieRenderizado.classList.add('replyComment')
+        reply.append(replieRenderizado)
+      })
   }
-  comment.append(commentMain,reply)
 
-  if(renderImmediately){
-    document.querySelector('#comments').append(comment)
-  }
+  comment.append(commentMain,reply)
+  
   return comment
 }
 
 async function setup(){
   const results = await requestHttp()
   comments.push(...results)
-  comments.forEach(comment => render(comment, true))
+  comments.forEach(comment => {
+    const renderedComment = render(comment)
+    document.querySelector('#comments').append(renderedComment)
+  })
 }
 
 setup()
