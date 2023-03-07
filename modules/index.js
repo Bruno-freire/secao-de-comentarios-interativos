@@ -1,5 +1,39 @@
 let comments = []
 
+function elapsedTime(timestamp) {
+  const millisecondsPerSecond = 1000;
+  const millisecondsPerMinute = millisecondsPerSecond * 60;
+  const millisecondsPerHour = millisecondsPerMinute * 60;
+  const millisecondsPerDay = millisecondsPerHour * 24;
+  const millisecondsPerWeek = millisecondsPerDay * 7;
+  const millisecondsPerMonth = millisecondsPerDay * 30;
+
+  const now = Date.now();
+  const difference = now - timestamp;
+
+  if (difference < millisecondsPerMinute) {
+    return 'Agora mesmo';
+  } else if (difference < millisecondsPerHour) {
+    const minutes = Math.floor(difference / millisecondsPerMinute);
+    return `${minutes} ${minutes === 1 ? 'minuto' : 'minutos'} atrás`;
+  } else if (difference < millisecondsPerDay) {
+    const hours = Math.floor(difference / millisecondsPerHour);
+    return `${hours} ${hours === 1 ? 'hora' : 'horas'} atrás`;
+  } else if (difference < millisecondsPerWeek) {
+    const days = Math.floor(difference / millisecondsPerDay);
+    return `${days} ${days === 1 ? 'dia' : 'dias'} atrás`;
+  } else if (difference < millisecondsPerMonth) {
+    const weeks = Math.floor(difference / millisecondsPerWeek);
+    return `${weeks} ${weeks === 1 ? 'semana' : 'semanas'} atrás`;
+  } else {
+    const months = Math.floor(difference / millisecondsPerMonth);
+    return `${months} ${months === 1 ? 'mês' : 'meses'} atrás`;
+  }
+}
+
+
+
+
 function createDiv(classList){
   const div = document.createElement('div')
   div.classList = classList ?? ''
@@ -40,7 +74,7 @@ async function requestHttp(){
   return await fetch('http://localhost:3000/comments').then(res => res.json())
 }
 
-function render(commentData, isReply){
+function render(commentData){
   const comment = createComment()
   
   const commentMain = createDiv('comment-main')
@@ -63,8 +97,7 @@ function render(commentData, isReply){
   const imgUser = createImg(commentData.user.image.png)
   const userName = createText(commentData.user.username)
   userName.classList = 'comment-info-user-name'
-  const elapseTime = createText(commentData.createdAt)
-
+  const elapseTime = createText(elapsedTime(Date.parse(commentData.createdAt)))
   commentInfoUser.append(imgUser,userName,elapseTime)
   commentMainContentHeader.append(commentInfoUser,div)
   commentMainContent.append(commentMainContentHeader,commentMainContentText)
@@ -93,3 +126,16 @@ async function setup(){
 }
 
 setup()
+
+async function send(){
+  const img = document.querySelector('#currentUserImg').src
+  const content = document.querySelector('textarea').value
+  const createdAt = new Date()
+  await fetch('http://localhost:3000/comments', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0})
+  })
+}
+
+document.querySelector('.send').addEventListener('click', send)
