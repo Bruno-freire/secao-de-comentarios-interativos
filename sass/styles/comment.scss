@@ -53,16 +53,30 @@
             font-weight: bold;
           }
         }
-        .comment-info-reply{
+        .comment-info-reply {
           display: flex;
           column-gap: 0.5rem;
           justify-content: center;
           align-items: center;
           cursor: pointer;
-          p{
+        
+          &:not(:has(.deleteDiv, .editDiv)):hover {
+            opacity: 0.6;
+          }
+          p {
             color: $ModerateBlue;
           }
+          .deleteDiv, .editDiv {
+            display: flex;
+            column-gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+          }
+          .deleteDiv:hover, .editDiv:hover {
+            opacity: 0.6;
+          }
         }
+        
       }
       .comment-main-content-text{
         color: $GrayishBlue;

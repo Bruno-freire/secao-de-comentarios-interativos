@@ -31,9 +31,6 @@ function elapsedTime(timestamp) {
   }
 }
 
-
-
-
 function createDiv(classList){
   const div = document.createElement('div')
   div.classList = classList ?? ''
@@ -89,17 +86,32 @@ function render(commentData){
   commentMainContentText.textContent = commentData.content
 
   const commentInfoUser = createDiv('comment-info-user')
-  const div = createDiv('comment-info-reply')
-  const imgReply = createImg('./images/icon-reply.svg', 'reply')
-  const replyText = createText('Reply')
-  div.append(imgReply,replyText)
+  const commentInfoReply = createDiv('comment-info-reply')
+
+  if(commentData.currentUser){
+    const deleteDiv = createDiv("deleteDiv")
+    const deleteImg = createImg('./images/icon-delete.svg')
+    const deleteTxt = createText('Delete')
+    deleteDiv.append(deleteImg,deleteTxt)
+
+    const editDiv = createDiv("editDiv")
+    const editImg = createImg('./images/icon-edit.svg')
+    const editTxt = createText('Edit')
+    editDiv.append(editImg,editTxt)
+    
+    commentInfoReply.append(deleteDiv,editDiv)
+  }else{
+    const imgReply = createImg('./images/icon-reply.svg', 'reply')
+    const replyText = createText('Reply')
+    commentInfoReply.append(imgReply,replyText)
+  }
 
   const imgUser = createImg(commentData.user.image.png)
   const userName = createText(commentData.user.username)
   userName.classList = 'comment-info-user-name'
   const elapseTime = createText(elapsedTime(Date.parse(commentData.createdAt)))
   commentInfoUser.append(imgUser,userName,elapseTime)
-  commentMainContentHeader.append(commentInfoUser,div)
+  commentMainContentHeader.append(commentInfoUser,commentInfoReply)
   commentMainContent.append(commentMainContentHeader,commentMainContentText)
   commentMain.append(commentMainPoints,commentMainContent)
 
@@ -118,7 +130,8 @@ function render(commentData){
 
 async function setup(){
   const results = await requestHttp()
-  comments.push(...results)
+  const results2 = [...results]
+  comments.push(...results2)
   comments.forEach(comment => {
     const renderedComment = render(comment)
     document.querySelector('#comments').append(renderedComment)
@@ -134,8 +147,10 @@ async function send(){
   await fetch('http://localhost:3000/comments', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0})
+    body: JSON.stringify({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true})
   })
+  
 }
 
 document.querySelector('.send').addEventListener('click', send)
+

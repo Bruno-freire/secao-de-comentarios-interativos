@@ -88,8 +88,20 @@ main {
   align-items: center;
   cursor: pointer;
 }
+.comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply:not(:has(.deleteDiv, .editDiv)):hover {
+  opacity: 0.6;
+}
 .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply p {
   color: hsl(238deg, 40%, 52%);
+}
+.comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply .deleteDiv, .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply .editDiv {
+  display: flex;
+  column-gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+.comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply .deleteDiv:hover, .comment .comment-main .comment-main-content .comment-main-content-header .comment-info-reply .editDiv:hover {
+  opacity: 0.6;
 }
 .comment .comment-main .comment-main-content .comment-main-content-text {
   color: hsl(211deg, 10%, 45%);
