@@ -67,11 +67,57 @@ function createImg(src,alt){
   return img
 }
 
-async function requestHttp(){
-  return await fetch('http://localhost:3000/comments').then(res => res.json())
+async function requestHttp(url){
+  return await fetch(`http://localhost:3000/${url}`).then(res => res.json())
+}
+
+async function findComment(id){
+  const comments = await requestHttp('comments')
+  comments.forEach(comment => {
+    if(comment.replies){
+      comment.replies.forEach(replie => {
+        if(replie.id === id){
+          return replie
+        }
+      })
+    }else{
+
+    }
+  })
+}
+
+async function deleteComment(commentData) {
+  //verifica se é uma resposta
+  if (commentData.replyingTo) {
+    const comments = [...await requestHttp('comments')]
+    comments.forEach(comment => {
+      if (comment.replies.length !== 0) {
+        const commentId = comment.id
+        const index = comment.replies.findIndex(reply => reply.id === commentData.id);
+        if (index !== -1) {
+          comment.replies.splice(index, 1);
+        }
+        console.log(comments)
+        fetch(`http://localhost:3000/comments/${commentId}`, {
+          method: 'PUT', 
+          body: JSON.stringify(comment),
+          headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+      }
+    })
+  } else {
+    await fetch(`http://localhost:3000/comments/${commentData.id}`, {
+      method: 'DELETE'
+    })
+  }
 }
 
 function render(commentData){
+  if(commentData == null){
+    return
+  }
   const comment = createComment()
   
   const commentMain = createDiv('comment-main')
@@ -93,6 +139,7 @@ function render(commentData){
     const deleteImg = createImg('./images/icon-delete.svg')
     const deleteTxt = createText('Delete')
     deleteDiv.append(deleteImg,deleteTxt)
+    deleteDiv.addEventListener('click', () => deleteComment(commentData))
 
     const editDiv = createDiv("editDiv")
     const editImg = createImg('./images/icon-edit.svg')
@@ -129,7 +176,7 @@ function render(commentData){
 }
 
 async function setup(){
-  const results = await requestHttp()
+  const results = await requestHttp('comments')
   const results2 = [...results]
   comments.push(...results2)
   comments.forEach(comment => {
@@ -147,9 +194,8 @@ async function send(){
   await fetch('http://localhost:3000/comments', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true})
+    body: JSON.stringify({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true, replies: []})
   })
-  
 }
 
 document.querySelector('.send').addEventListener('click', send)

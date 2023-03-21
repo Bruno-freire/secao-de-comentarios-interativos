@@ -53,7 +53,7 @@
           "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
           "createdAt": "2023-03-01T22:15:00Z",
           "score": 2,
-          "replyingTo": "ramsesmiron",
+          "replyingTo": "maxblagun",
           "user": {
             "image": {
               "png": "./images/avatars/image-juliusomo.png",
@@ -73,9 +73,10 @@
         "username": "juliusomo"
       },
       "content": "This is a test",
-      "createdAt": "2023-03-21T00:45:12.365Z",
+      "createdAt": "2023-03-21T19:01:09.000Z",
       "score": 0,
       "currentUser": true,
+      "replies": [],
       "id": 3
     }
   ]
