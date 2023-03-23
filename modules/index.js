@@ -96,14 +96,29 @@ async function deleteComment(commentData) {
         const index = comment.replies.findIndex(reply => reply.id === commentData.id);
         if (index !== -1) {
           comment.replies.splice(index, 1);
-        }
-        fetch(`http://localhost:3000/comments/${commentId}`, {
+          fetch(`http://localhost:3000/comments/${commentId}`, {
           method: 'PUT', 
           body: JSON.stringify(comment),
           headers: {
             'Content-Type': 'application/json'
+          }
+        })
+        }else{
+          comment.replies.forEach((reply,indexCurrentReply) => {
+            reply.replies.map((answerOfTheAnswer,indexCurrentAnswerOfTheAnswer) => {
+              if(answerOfTheAnswer.id == commentData.id){
+                comment.replies[indexCurrentReply].replies.splice(indexCurrentAnswerOfTheAnswer,1)
+                fetch(`http://localhost:3000/comments/${commentId}`, {
+                  method: 'PUT', 
+                  body: JSON.stringify(comment),
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+              }
+            })
+          })
         }
-    })
       }
     })
   } else {
@@ -138,29 +153,48 @@ function generateRandomId() {
   return parseInt(id)
 }
 
+async function replyButton(button){
+  const id = parseInt(button.parentNode.parentNode.id.charAt(button.parentNode.parentNode.id.length - 1))
+  const nameReply = button.parentNode.parentNode.parentNode.querySelector(".comment-info-user-name").textContent
+  const comments = await requestHttp('comments')
+  const img = button.parentNode.querySelector('#currentUserImg').src
+  const content = button.parentNode.querySelector('textarea').value
+  const createdAt = new Date()
+  comments.map(comment => {
+    if(comment.id === id){
+      comment.replies.push({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true, replies: [], id: generateRandomId(),replyingTo: nameReply})
+      fetch(`http://localhost:3000/comments/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(comment)
+      })
+      return;
+    }else{
+      if(comment.replies){
+        comment.replies.map(reply => {
+          if(reply.id == id){
+            reply.replies.push({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true, replies: [], id: generateRandomId(),replyingTo: nameReply})
+            fetch(`http://localhost:3000/comments/${comment.id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(comment)
+            })
+          }
+        })
+      }
+    }
+  })
+}
 
 function addReplyButtonClickEvent() {
   const replyButtons = document.querySelectorAll('.replyBtn');
   replyButtons.forEach(button => {
-    button.addEventListener('click', async () => {
-      const id = parseInt(button.parentNode.parentNode.id.charAt(button.parentNode.parentNode.id.length - 1))
-      const nameReply = button.parentNode.parentNode.parentNode.querySelector(".comment-info-user-name").textContent
-      const comments = await requestHttp('comments')
-      const img = button.parentNode.querySelector('#currentUserImg').src
-      const content = button.parentNode.querySelector('textarea').value
-      const createdAt = new Date()
-      comments.map(comment => {
-        if(comment.id === id){
-          comment.replies.push({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true, replies: [], id: generateRandomId(),replyingTo: nameReply})
-          fetch(`http://localhost:3000/comments/${id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(comment)
-          })
-        }
-      })
+    button.addEventListener('click', () => {
+      replyButton(button)
     })
   });
 }
