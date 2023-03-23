@@ -97,7 +97,6 @@ async function deleteComment(commentData) {
         if (index !== -1) {
           comment.replies.splice(index, 1);
         }
-        console.log(comments)
         fetch(`http://localhost:3000/comments/${commentId}`, {
           method: 'PUT', 
           body: JSON.stringify(comment),
@@ -111,6 +110,71 @@ async function deleteComment(commentData) {
     await fetch(`http://localhost:3000/comments/${commentData.id}`, {
       method: 'DELETE'
     })
+  }
+}
+
+function renderInputCurrentUser() {
+  return `
+    <div class="inputCurrentUser">
+      <img id="currentUserImg" src="./images/avatars/image-juliusomo.png" alt="userMain" />
+      <textarea
+        id="textContent"
+        maxlength="120"
+        style="resize: none"
+        placeholder="Add comment..."
+      ></textarea>
+      <button class="replyBtn">Reply</button>
+    </div>
+  `;
+}
+
+function generateRandomId() {
+  const characters = '0123456789';
+  const length = 8; // Altere o comprimento do ID, se necessário
+  let id = '';
+  for (let i = 0; i < length; i++) {
+    id += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return parseInt(id)
+}
+
+
+function addReplyButtonClickEvent() {
+  const replyButtons = document.querySelectorAll('.replyBtn');
+  replyButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const id = parseInt(button.parentNode.parentNode.id.charAt(button.parentNode.parentNode.id.length - 1))
+      const nameReply = button.parentNode.parentNode.parentNode.querySelector(".comment-info-user-name").textContent
+      const comments = await requestHttp('comments')
+      const img = button.parentNode.querySelector('#currentUserImg').src
+      const content = button.parentNode.querySelector('textarea').value
+      const createdAt = new Date()
+      comments.map(comment => {
+        if(comment.id === id){
+          comment.replies.push({user: {image: {png: img},username: 'juliusomo'},content,createdAt,score: 0, currentUser: true, replies: [], id: generateRandomId(),replyingTo: nameReply})
+          fetch(`http://localhost:3000/comments/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(comment)
+          })
+        }
+      })
+    })
+  });
+}
+
+function Reply(){
+  const reply = this.parentNode.parentNode.parentNode.parentNode.querySelector('.reply')
+  if(reply.innerHTML !== ''){
+    reply.insertAdjacentHTML("beforeend", renderInputCurrentUser());
+    addReplyButtonClickEvent()
+    const newParagraph = reply.lastElementChild;
+    newParagraph.scrollIntoView({ behavior: 'smooth' });
+  }else{
+    reply.innerHTML = renderInputCurrentUser()
+    addReplyButtonClickEvent()
   }
 }
 
@@ -151,6 +215,7 @@ function render(commentData){
     const imgReply = createImg('./images/icon-reply.svg', 'reply')
     const replyText = createText('Reply')
     commentInfoReply.append(imgReply,replyText)
+    commentInfoReply.addEventListener('click', Reply)
   }
 
   const imgUser = createImg(commentData.user.image.png)
@@ -199,4 +264,3 @@ async function send(){
 }
 
 document.querySelector('.send').addEventListener('click', send)
-
