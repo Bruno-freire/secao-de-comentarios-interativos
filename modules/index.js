@@ -159,6 +159,12 @@ async function replyButton(button){
   const comments = await requestHttp('comments')
   const img = button.parentNode.querySelector('#currentUserImg').src
   const content = button.parentNode.querySelector('textarea').value
+  const regex = /^\S.*\S$/
+  const notVoid = regex.test(content);
+  if(!notVoid){
+    alert('Não é possivel enviar uma mensagem vazia');
+    return;
+  }
   const createdAt = new Date()
   comments.map(comment => {
     if(comment.id === id){
@@ -202,14 +208,32 @@ function addReplyButtonClickEvent() {
 function Reply(){
   const reply = this.parentNode.parentNode.parentNode.parentNode.querySelector('.reply')
   if(reply.innerHTML !== ''){
+    if(reply.querySelector('.inputCurrentUser')){
+      reply.querySelector('#textContent').focus()
+      return
+    }
     reply.insertAdjacentHTML("beforeend", renderInputCurrentUser());
+    reply.querySelector('#textContent').focus()
+    reply.querySelector('#textContent').addEventListener('blur', () => {
+      if(reply.querySelector('#textContent').value == ''){
+        reply.querySelector('.inputCurrentUser').remove()
+      }
+    })
     addReplyButtonClickEvent()
-    const newParagraph = reply.lastElementChild;
-    newParagraph.scrollIntoView({ behavior: 'smooth' });
   }else{
     reply.innerHTML = renderInputCurrentUser()
+    reply.querySelector('#textContent').focus()
+    reply.querySelector('#textContent').addEventListener('blur', () => {
+      if(reply.querySelector('#textContent').value == ''){
+        reply.querySelector('.inputCurrentUser').remove()
+      }
+    })
     addReplyButtonClickEvent()
   }
+    const newParagraph = reply.lastElementChild;
+    if (newParagraph.offsetTop > window.scrollY + window.innerHeight) {
+      newParagraph.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 function render(commentData){
@@ -289,6 +313,13 @@ setup()
 async function send(){
   const img = document.querySelector('#currentUserImg').src
   const content = document.querySelector('textarea').value
+
+  const regex = /^\S.*\S$/
+  const notVoid = regex.test(content);
+  if(!notVoid){
+    alert('Não é possivel enviar uma mensagem vazia');
+    return;
+  }
   const createdAt = new Date()
   await fetch('http://localhost:3000/comments', {
     method: 'POST',
