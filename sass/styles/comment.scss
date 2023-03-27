@@ -82,6 +82,7 @@
         color: $GrayishBlue;
         font-size: 14px;
         cursor: default;
+        display: block;
       }
     }
   }
@@ -96,4 +97,9 @@
       row-gap: 0;
     }
   }
+}
+.comment-main-content-text > button{
+  position: relative;
+  left: 85%;
+  margin-top: 0.5rem;
 }
